@@ -1,0 +1,54 @@
+fl:
+  dataset: "mnist"           # mnist | emnist
+  num_clients: 10
+  data_dir: "./data"
+  partition_method: "dirichlet"  # iid | label_skew | dirichlet
+  dirichlet_alpha: 0.5
+  model_type: "cnn"          # mlp | cnn
+  input_size: 784
+  hidden_size: 128
+  num_classes: 10
+  cnn_channels_1: 32
+  cnn_channels_2: 64
+  rounds: 5
+  local_epochs: 2
+  batch_size: 32
+  lr: 0.01
+  device: "auto"             # auto | cpu | cuda
+  algorithm: "fedavg"        # fedavg | fedasync | fedfa | fedprox
+  # async params
+  async_alpha: 0.1
+  async_concurrency: 3
+  duration_scale: 1.0
+  staleness_weighting: "inverse"  # none | inverse
+  async_updates_per_log: 10
+  fedfa_buffer_size: 4
+  fedprox_mu: 0.01
+  client_speed_weights: null     
+  results_dir: "./results"
+  save_model: true
+
+privacy:
+  differential_privacy:
+    enabled: false
+    noise_multiplier: 1.0
+    max_grad_norm: 1.0
+    target_epsilon: 10.0
+    target_delta: 0.00001
+  secure_aggregation:
+    enabled: false
+    num_shares: 3
+  budget_tracker:
+    alert_threshold: 0.8
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  secret_key: "${SECRET_KEY}"
+  access_token_expire_minutes: 1440  # 24 hours
+  database_url: "${DATABASE_URL}"
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:80"
+    - "http://frontend:80"

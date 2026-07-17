@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #030712;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+}
+
+@layer components {
+  /* Glowing border card */
+  .card {
+    @apply bg-[#0f172a] border border-[#1e293b] rounded-xl p-6;
+  }
+
+  .card-glow {
+    @apply card;
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.1), inset 0 1px 0 rgba(34, 211, 238, 0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  .card-glow:hover {
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.3), 0 4px 24px rgba(34, 211, 238, 0.1);
+  }
+
+  /* Cyber button */
+  .btn-primary {
+    @apply bg-cyan-500 hover:bg-cyan-400 text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    @apply bg-[#1e293b] hover:bg-[#334155] text-slate-300 font-medium px-6 py-2.5 rounded-lg transition-all duration-200 border border-[#334155];
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-500 text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200;
+  }
+
+  /* Status badges */
+  .badge-running   { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-cyan-500/20 text-cyan-400 border border-cyan-500/30; }
+  .badge-completed { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30; }
+  .badge-failed    { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30; }
+  .badge-pending   { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30; }
+  .badge-cancelled { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-500/20 text-slate-400 border border-slate-500/30; }
+
+  /* Form inputs */
+  .input {
+    @apply bg-[#1e293b] border border-[#334155] rounded-lg px-4 py-2.5 text-slate-200 placeholder-slate-500 
+           focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 
+           transition-all duration-200 w-full;
+  }
+
+  .label { @apply block text-sm font-medium text-slate-400 mb-1.5; }
+
+  /* Grid hex background pattern */
+  .hex-bg {
+    background-image: 
+      radial-gradient(circle at 25px 25px, rgba(34,211,238,0.03) 2px, transparent 0),
+      radial-gradient(circle at 75px 75px, rgba(34,211,238,0.03) 2px, transparent 0);
+    background-size: 100px 100px;
+  }
+
+  /* Mono data display */
+  .data-value {
+    @apply font-mono text-cyan-400 font-semibold;
+  }
+
+  /* Sidebar item */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-[#1e293b] transition-all duration-200 cursor-pointer;
+  }
+  .nav-item.active {
+    @apply text-cyan-400 bg-cyan-500/10 border border-cyan-500/20;
+    box-shadow: inset 3px 0 0 #22d3ee;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    @apply h-2 rounded-full bg-[#1e293b] overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full rounded-full bg-gradient-to-r from-cyan-600 to-cyan-400 transition-all duration-500;
+  }
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink { animation: blink 1.2s step-end infinite; }
+
+/* Scanning line animation — smooth ease with a fade in/out at the edges */
+@keyframes scan-line {
+  0%   { top: -5%;  opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 105%; opacity: 0; }
+}
+
+/* Glow pulse for running indicator */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 4px #22d3ee; }
+  50%       { box-shadow: 0 0 12px #22d3ee, 0 0 24px #22d3ee; }
+}
+.glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
+
+/* Slow rotating radar sweep — used behind the login card */
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.radar-sweep {
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(34,211,238,0.14) 20deg, transparent 55deg, transparent 360deg);
+  animation: radar-spin 7s linear infinite;
+}
+
+/* Drifting data particles — used behind the login card */
+@keyframes particle-drift {
+  0%   { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.3; }
+  100% { transform: translateY(-140px) translateX(12px) scale(1); opacity: 0; }
+}
+.particle-drift { animation: particle-drift 5s ease-in infinite; }
+
+/* Chart tooltip */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #0f172a !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 8px !important;
+  color: #e2e8f0 !important;
+}

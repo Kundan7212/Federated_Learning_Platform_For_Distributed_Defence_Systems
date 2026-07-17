@@ -1,0 +1,39 @@
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+#   To enable a persistent pip cache on Railway once you know your actual
+#   Railway service ID (Project -> Service -> Settings -> copy the Service
+#   ID), replace the RUN line below with:
+#     RUN --mount=type=cache,id=s/<your-service-id>-pip-cache,target=/root/.cache/pip \
+#         pip install --timeout=300 --retries=10 -r requirements.txt
+
+COPY backend/requirements.txt .
+RUN --mount=type=cache,id=s/af9b6074-b3d1-4600-936b-db3745f9f229-/root/.cache/pip,target=/root/.cache/pip \
+    pip install \
+    --timeout=300 \
+    --retries=10 \
+    -r requirements.txt
+
+COPY backend/app ./app
+
+COPY fl_engine  ./fl_engine
+COPY privacy    ./privacy
+COPY attacks    ./attacks
+COPY defense    ./defense
+COPY config     ./config
+
+RUN mkdir -p /app/data /app/results
+
+RUN useradd -m -u 1000 fluser && chown -R fluser:fluser /app
+USER fluser
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
