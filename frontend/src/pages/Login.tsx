@@ -87,7 +87,7 @@ export default function Login() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 mb-4 glow-pulse">
             <Cpu size={32} className="text-cyan-400" />
           </div>
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-100">Federated Learning Platform for Distributed Defence Systems</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-100">Federated Learning Platform For Distributed Defence Systems</h1>
           <p className="text-slate-500 text-sm mt-1 font-mono tracking-wider">PRIVACY-PRESERVING AND SECURE INTELLIGENCE</p>
         </div>
 
@@ -204,7 +204,7 @@ export default function Login() {
                 )}
               </button>
               <p className="text-center text-xs text-slate-600 mt-3">
-                Instant read-only-style access to the platform — no sign-up needed.
+                Instant access to the platform — no sign-up needed.
               </p>
             </>
           )}
