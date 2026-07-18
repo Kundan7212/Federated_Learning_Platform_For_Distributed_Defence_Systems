@@ -61,11 +61,11 @@ export function useTrainingWebSocket(experimentId: string | null) {
 
       pingRef.current = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) ws.send('ping');
-      }, 25000);
+      }, 10000);
     };
 
     ws.onmessage = (event: MessageEvent) => {
-      if (event.data === '{"type":"pong"}') return;
+      if (event.data === '{"type":"pong"}' || event.data === '{"type":"heartbeat"}') return;
 
       try {
         const msg = JSON.parse(event.data) as WsMessage;

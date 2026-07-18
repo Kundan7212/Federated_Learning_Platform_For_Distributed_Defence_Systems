@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import asyncio
 import json
 import logging
 
@@ -145,7 +145,11 @@ async def training_websocket(
 
     try:
         while True:
-            data = await websocket.receive_text()
+            try:
+                data = await asyncio.wait_for(websocket.receive_text(), timeout=15.0)
+            except asyncio.TimeoutError:
+                await websocket.send_text(json.dumps({"type": "heartbeat"}))
+                continue
             if data == "ping":
                 await websocket.send_text(json.dumps({"type": "pong"}))
     except WebSocketDisconnect:
