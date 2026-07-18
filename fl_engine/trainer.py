@@ -1,4 +1,5 @@
 from __future__ import annotations
+import time
 from typing import Tuple
 import torch
 import torch.nn as nn
@@ -39,6 +40,7 @@ def train(
             optimizer.step()
             epoch_loss  += loss.item()
             epoch_count += 1
+            time.sleep(0)
         final_loss  = epoch_loss
         final_count = epoch_count
 
@@ -70,6 +72,7 @@ def evaluate(
             total_loss    += loss.item() * images.size(0)
             total_samples += images.size(0)
             correct       += (outputs.argmax(dim=1) == labels).sum().item()
+            time.sleep(0)
 
     avg_loss = total_loss / max(total_samples, 1)
     accuracy = correct   / max(total_samples, 1)
