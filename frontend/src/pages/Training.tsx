@@ -44,6 +44,7 @@ export default function Training() {
   const [totalRounds, setTotalRounds] = useState(5);
   const [submitError, setSubmitError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   const ws = useTrainingWebSocket(phase === 'training' ? experimentId : null);
 
@@ -83,8 +84,21 @@ export default function Training() {
   }
 
   async function handleCancel() {
-    if (experimentId) {
-      try { await trainingApi.cancel(experimentId); } catch { /* ignore */ }
+    if (experimentId && !cancelling) {
+      setCancelling(true);
+      try {
+        await trainingApi.cancel(experimentId);
+      } catch (err: any) {
+        // 409 means it's already cancelled/finished server-side — treat as
+        // success so the UI doesn't leave a clickable button around forever.
+        if (err?.response?.status !== 409) {
+          setCancelling(false);
+          return;
+        }
+      }
+      // Don't wait on the WebSocket status_change message to arrive —
+      // reflect the cancellation locally right away.
+      setPhase('done');
     }
   }
 
@@ -120,8 +134,12 @@ export default function Training() {
               )}
             </span>
             {phase === 'training' && ws.status !== 'completed' && (
-              <button onClick={handleCancel} className="btn-danger flex items-center gap-2 text-sm">
-                <Square size={14} /> Cancel
+              <button
+                onClick={handleCancel}
+                disabled={cancelling}
+                className="btn-danger flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Square size={14} /> {cancelling ? 'Cancelling…' : 'Cancel'}
               </button>
             )}
             {phase === 'done' && (
