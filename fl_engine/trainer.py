@@ -6,6 +6,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from fl_engine.model import get_device
+from fl_engine.exceptions import TrainingCancelledError
 
 
 def train(
@@ -17,6 +18,7 @@ def train(
     device  = get_device(cfg.get("device", "auto"))
     epochs  = cfg.get("local_epochs", 2)
     lr      = cfg.get("lr", 0.01)
+    stop_event = cfg.get("_stop_event")
 
     model = model.to(device)
     model.train()
@@ -31,6 +33,8 @@ def train(
         epoch_loss  = 0.0
         epoch_count = 0
         for images, labels in data_loader:
+            if stop_event is not None and stop_event.is_set():
+                raise TrainingCancelledError("Training cancelled by user")
             images = images.to(device)
             labels = labels.to(device)
             optimizer.zero_grad()

@@ -21,6 +21,7 @@ from app.models.experiment import Experiment
 from app.models.privacy_log import PrivacyLog
 from app.models.round_metric import RoundMetric
 from app.websockets.manager import ConnectionManager
+from fl_engine.exceptions import TrainingCancelledError
 from config.hyperparams import (
     DEFAULT_TARGET_DELTA,
     DEFAULT_TARGET_EPSILON,
@@ -28,10 +29,6 @@ from config.hyperparams import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-class TrainingCancelledError(Exception):
-    """Raised inside the training callback to abort a running experiment."""
 
 
 class PrivacyBudgetExceededError(Exception):
@@ -253,6 +250,7 @@ class TrainingService:
 
         try:
 
+            fl_cfg = {**fl_cfg, "_stop_event": stop_event}
             from fl_engine.runner import run_experiment
             _, _, summary = run_experiment(
                 cfg=fl_cfg,
