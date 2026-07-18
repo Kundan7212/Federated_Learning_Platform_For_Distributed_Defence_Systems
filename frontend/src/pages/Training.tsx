@@ -89,15 +89,11 @@ export default function Training() {
       try {
         await trainingApi.cancel(experimentId);
       } catch (err: any) {
-        // 409 means it's already cancelled/finished server-side — treat as
-        // success so the UI doesn't leave a clickable button around forever.
         if (err?.response?.status !== 409) {
           setCancelling(false);
           return;
         }
       }
-      // Don't wait on the WebSocket status_change message to arrive —
-      // reflect the cancellation locally right away.
       setPhase('done');
     }
   }
